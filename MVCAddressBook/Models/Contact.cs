@@ -36,7 +36,7 @@ namespace MVCAddressBook.Models
 
         public string Phone { get; set; }
 
-        public DateTime Created { get; set; }
+        public DateTime Created { get; set; } 
 
         [NotMapped]
         public IFormFile ImageFile { get; set; }

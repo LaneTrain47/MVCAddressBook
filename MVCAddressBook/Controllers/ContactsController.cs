@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,12 @@ namespace MVCAddressBook.Controllers
     public class ContactsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<AppUser> _userManager; 
 
-        public ContactsController(ApplicationDbContext context)
+        public ContactsController(ApplicationDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Contacts
@@ -48,7 +51,6 @@ namespace MVCAddressBook.Controllers
         // GET: Contacts/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -57,18 +59,23 @@ namespace MVCAddressBook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Birthday,Address1,Address2,City,State,ZipCode,Email,Phone,Created,ImageData,ImageType")] Contact contact)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Birthday,Address1,Address2,City,State,ZipCode,Email,Phone,ImageFile")] Contact contact)
         {
             if (ModelState.IsValid)
             {
-                contact.userId = _userManager.GetUserId(User);
+                contact.UserId = _userManager.GetUserId(User);
                 contact.Created = DateTime.Now;
-                
+
+                //if (contact.ImageFile is not null)
+                //{
+                //    contact.ImageData = await _imageService.EncodeImageAsync(contact.ImageFile);
+                //    contact.ImageType = _imageService.ContentType(contact.ImageFile);
+                //}
+
                 _context.Add(contact);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", contact.UserId);
             return View(contact);
         }
 
@@ -94,7 +101,7 @@ namespace MVCAddressBook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,FirstName,LastName,Birthday,Address1,Address2,City,State,ZipCode,Email,Phone,Created,ImageData,ImageType")] Contact contact)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,FirstName,LastName,Birthday,Address1,Address2,City,State,ZipCode,Email,Phone,Created,ImageData,ImageType,ImageFile")] Contact contact)
         {
             if (id != contact.Id)
             {
@@ -105,6 +112,13 @@ namespace MVCAddressBook.Controllers
             {
                 try
                 {
+
+                    //if (contact.ImageFile is not null)
+                    //{
+                    //    contact.ImageData = await _imageService.EncodeImageAsync(contact.ImageFile);
+                    //    contact.ImageType = _imageService.ContentType(contact.ImageFile);
+                    //}
+
                     _context.Update(contact);
                     await _context.SaveChangesAsync();
                 }

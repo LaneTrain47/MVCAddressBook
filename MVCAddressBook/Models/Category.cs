@@ -17,7 +17,7 @@ namespace MVCAddressBook.Models
 
         public virtual AppUser User { get; set; }
 
-        public ICollection<Contact> Contacts { get; set; } = new HashSet<Contact>();
+        public virtual ICollection<Contact> Contacts { get; set; } = new HashSet<Contact>();
 
     }
 }

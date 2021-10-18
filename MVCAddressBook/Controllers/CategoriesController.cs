@@ -93,7 +93,7 @@ namespace MVCAddressBook.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
         {
             if (id != category.Id)
             {
@@ -104,7 +104,7 @@ namespace MVCAddressBook.Controllers
             {
                 try
                 {
-                    _context.Update(category);
+                    var originalCategory = await _context.Categories.FindAsync(id);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

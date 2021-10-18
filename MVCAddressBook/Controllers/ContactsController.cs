@@ -135,7 +135,6 @@ namespace MVCAddressBook.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", contact.UserId);
             return View(contact);
         }
 

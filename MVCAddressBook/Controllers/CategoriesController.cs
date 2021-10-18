@@ -105,6 +105,7 @@ namespace MVCAddressBook.Controllers
                 try
                 {
                     var originalCategory = await _context.Categories.FindAsync(id);
+                    originalCategory.Name = category.Name;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

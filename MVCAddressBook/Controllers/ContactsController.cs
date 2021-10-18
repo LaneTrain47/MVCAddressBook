@@ -25,6 +25,7 @@ namespace MVCAddressBook.Controllers
         // GET: Contacts
         public async Task<IActionResult> Index()
         {
+            var userId = _userManager.GetUserId(User);
             var applicationDbContext = _context.Contacts.Include(c => c.User);
             return View(await applicationDbContext.ToListAsync());
         }
